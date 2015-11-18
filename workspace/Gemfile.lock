@@ -1,7 +1,7 @@
 PATH
-  remote: lita-guide-demo
+  remote: lita-sharleen
   specs:
-    lita-guide-demo (0.1.0)
+    lita-sharleen (1.0.0)
       lita (>= 4.6)
 
 GEM
@@ -56,5 +56,8 @@ PLATFORMS
 
 DEPENDENCIES
   lita
-  lita-guide-demo!
+  lita-sharleen!
   lita-slack
+
+BUNDLED WITH
+   1.10.6

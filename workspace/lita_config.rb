@@ -19,6 +19,7 @@ Lita.configure do |config|
   # appropriate gem to the Gemfile.
   config.robot.adapter = :shell
   # config.robot.adapter = :slack
+  config.adapters.slack.token = ENV['slack-lita-token'] || 'jojos'
 
   ## Example: Set options for the chosen adapter.
   # config.adapter.username = "myname"
@@ -31,6 +32,4 @@ Lita.configure do |config|
   ## Example: Set configuration for any loaded handlers. See the handler's
   ## documentation for options.
   # config.handlers.some_handler.some_config_key = "value"
-
-  config.http.port = 1234
 end

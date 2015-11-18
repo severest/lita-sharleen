@@ -3,7 +3,7 @@ source "https://rubygems.org"
 gem "lita"
 gem "lita-slack"
 
-gem "lita-guide-demo", :path => "lita-guide-demo"
+gem "lita-sharleen", :path => "lita-sharleen"
 
 # Uncomment to use the HipChat adapter
 # gem "lita-hipchat"
