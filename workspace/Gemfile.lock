@@ -58,6 +58,3 @@ DEPENDENCIES
   lita
   lita-sharleen!
   lita-slack
-
-BUNDLED WITH
-   1.10.6
