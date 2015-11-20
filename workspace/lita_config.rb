@@ -19,7 +19,7 @@ Lita.configure do |config|
   # appropriate gem to the Gemfile.
   config.robot.adapter = :shell
   # config.robot.adapter = :slack
-  config.adapters.slack.token = ENV['slack-lita-token'] || 'jojos'
+  config.adapters.slack.token = ENV['SLACK_LITA_TOKEN'] || 'jojos'
 
   ## Example: Set options for the chosen adapter.
   # config.adapter.username = "myname"
