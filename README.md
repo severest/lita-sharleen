@@ -17,5 +17,5 @@ The following steps will load a virtual machine with the necessary installation 
 
 ## APIs Used
 
-https://market.mashape.com/andruxnet/random-famous-quotes
-https://market.mashape.com/community/urban-dictionary
+* https://market.mashape.com/andruxnet/random-famous-quotes
+* https://market.mashape.com/community/urban-dictionary
