@@ -35,8 +35,9 @@ module Lita
 
       on :connected, :greet
 
-      def greet(response)
-        response.reply("That's right Billy I'm baaaaaaaaack")
+      def greet(payload)
+        target = Source.new(room: payload[:room])
+        robot.send_message(target, "That's right Billy I'm baaaaaaaaack")
       end
 
       Lita.register_handler(self)
