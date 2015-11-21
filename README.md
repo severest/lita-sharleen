@@ -13,3 +13,9 @@ The following steps will load a virtual machine with the necessary installation 
 1. `vagrant up` - Grab some coffee, this will take a some time.
 1. `vagrant ssh`
 1. `lita-dev`
+
+
+## APIs Used
+
+https://market.mashape.com/andruxnet/random-famous-quotes
+https://market.mashape.com/community/urban-dictionary
