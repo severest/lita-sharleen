@@ -13,6 +13,7 @@ The following steps will load a virtual machine with the necessary installation 
 1. `vagrant up` - Grab some coffee, this will take a some time.
 1. `vagrant ssh`
 1. `lita-dev`
+1. For testing purposes, you should probably activate the `:shell` adapter in `workspace/lita_config.rb` and comment out the `:slack` one
 
 
 ## APIs Used
