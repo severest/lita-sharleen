@@ -15,6 +15,11 @@ The following steps will load a virtual machine with the necessary installation 
 1. `lita-dev`
 1. For testing purposes, you should probably activate the `:shell` adapter in `workspace/lita_config.rb` and comment out the `:slack` one
 
+You will require the following environment variables:
+
+* `SLACK_LITA_TOKEN`: token provided by Slack to connect to the Lita integration
+* `MASHAPE_TOKEN`: API key for mashape.com
+
 
 ## APIs Used
 
