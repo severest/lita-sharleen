@@ -36,8 +36,10 @@ set :deploy_to, '/apps/lita-sharleen'
 
 namespace :deploy do
 
-  after :finished, :restart_god do
-    sudo "god restart sharleen"
-  end
+  # after :finished, :restart_god do
+  #   on roles(:all) do
+  #     execute :sudo, "god restart sharleen"
+  #   end
+  # end
 
 end
