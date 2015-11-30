@@ -12,20 +12,11 @@ module Lita
       # routes
 
       route(/^echo\s+(.+)/, :echo, help: { "echo TEXT" => "Echoes back TEXT." })
-      route(/start game/, :start_game)
       route(/sharleen/, :comeback)
       route(/^define\s+(.+)/, :define, help: { "define TEXT" => "Uses UrbanDictionary to define a word or phrase" })
 
       def echo(response)
         response.reply(response.matches)
-      end
-
-      def start_game(response)
-        if @@game.status == Game::STARTED
-          response.reply('game has already started')
-        end
-        response.reply('starting...')
-        @@game.start
       end
 
       def comeback(response)
@@ -57,13 +48,25 @@ module Lita
         end
       end
 
+      # questing
+      route(/^quest/, :quest)
+      route(/^scores/, :scores)
 
-      # events
+      def quest(response)
+        questor = response.user
+        response.reply("Alright #{questor.name}, here's your quest: " + @@game.quest_opening)
+      end
 
-      on :connected, :greet
-
-      def greet(payload)
-        robot.send_message('general', "That's right Billy I'm baaaaaaaaack")
+      def scores(response)
+        r = Redis::Namespace.new('users:id', redis: Lita.redis)
+        log.error(r.keys)
+        r.keys.each do |user_id|
+          u = redis.hgetall("quests:"+user_id)
+          log.error(u)
+          if u['score'].nil?
+            redis.hset("quests:"+user_id,'score',0)
+          end
+        end
       end
 
       Lita.register_handler(self)
