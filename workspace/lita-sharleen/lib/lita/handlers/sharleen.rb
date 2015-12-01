@@ -59,14 +59,14 @@ module Lita
 
       def scores(response)
         r = Redis::Namespace.new('users:id', redis: Lita.redis)
-        log.error(r.keys)
         r.keys.each do |user_id|
-          u = redis.hgetall("quests:"+user_id)
-          log.error(u)
-          if u['score'].nil?
+          user = r.hgetall(user_id)
+          user_quests = redis.hgetall("quests:"+user_id)
+          if user_quests['score'].nil?
             redis.hset("quests:"+user_id,'score',0)
           end
         end
+        response.reply(render_template('scores'))
       end
 
       Lita.register_handler(self)
