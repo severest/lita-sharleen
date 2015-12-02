@@ -42,7 +42,7 @@ module Lita
         data = MultiJson.load(http_response.body)
         if data["list"].count > 0
           definition = data["list"][0]
-          response.reply(definition["word"] + ": " + definition["definition"])
+          response.reply(render_template('definition', word: definition["word"], definition: definition["definition"]))
         else
           response.reply("No definition found, sorry guy")
         end
@@ -50,23 +50,38 @@ module Lita
 
       # questing
       route(/^quest/, :quest)
+      route(/^end quest/, :endquest)
       route(/^scores/, :scores)
 
       def quest(response)
         questor = response.user
-        response.reply("Alright #{questor.name}, here's your quest: " + @@game.quest_opening)
+        if redis.hget('quests:'+questor.id,'in_progress').nil? || redis.hget('quests:'+questor.id,'in_progress') == 'false'
+          redis.hset("quests:"+questor.id,'in_progress',true)
+          response.reply("Alright #{questor.name}, here's your quest: " + @@game.quest_opening)
+        else
+          response.reply("You're already questing bro")
+        end
+      end
+
+      def endquest(response)
+        redis.hset("quests:"+response.user.id,'in_progress',false)
+        response.reply('Yup')
       end
 
       def scores(response)
+        scores = {}
         r = Redis::Namespace.new('users:id', redis: Lita.redis)
         r.keys.each do |user_id|
           user = r.hgetall(user_id)
           user_quests = redis.hgetall("quests:"+user_id)
           if user_quests['score'].nil?
             redis.hset("quests:"+user_id,'score',0)
+            scores[user["name"]] = 0
+          else
+            scores[user["name"]] = redis.hget('quests:'+user_id,'score')
           end
         end
-        response.reply(render_template('scores'))
+        response.reply(render_template('scores', scores: scores))
       end
 
       Lita.register_handler(self)
