@@ -12,8 +12,9 @@ module Lita
       # routes
 
       route(/^echo\s+(.+)/, :echo, help: { "echo TEXT" => "Echoes back TEXT." })
-      route(/sharleen/, :comeback)
+      route(/[sS][hH][aA][rR][lL][eE][eE][nN]/, :comeback)
       route(/^define\s+(.+)/, :define, help: { "define TEXT" => "Uses UrbanDictionary to define a word or phrase" })
+      route(/^imdb\s+(.+)/, :imdb)
 
       def echo(response)
         response.reply(response.matches)
@@ -45,6 +46,23 @@ module Lita
           response.reply(render_template('definition', word: definition["word"], definition: definition["definition"]))
         else
           response.reply("No definition found, sorry guy")
+        end
+      end
+
+      def imdb(response)
+        http_response = http.get do |req|
+          req.url 'http://www.omdbapi.com/'
+          req.headers['Accept'] = 'application/json'
+          req.params['t'] = response.args.join(' ')
+          req.params['plot'] = 'full'
+          req.params['r'] = 'json'
+        end
+
+        data = MultiJson.load(http_response.body)
+        if data["Response"] == "True"
+          response.reply(render_template('imdb', title: data["Title"], plot: data["Plot"], released: data["Released"], actors: data["Actors"]))
+        else
+          response.reply("Movie not found, sorry guy")
         end
       end
 
