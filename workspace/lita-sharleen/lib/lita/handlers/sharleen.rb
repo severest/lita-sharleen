@@ -13,8 +13,10 @@ module Lita
 
       route(/^echo\s+(.+)/, :echo, help: { "echo TEXT" => "Echoes back TEXT." })
       route(/[sS][hH][aA][rR][lL][eE][eE][nN]/, :comeback)
-      route(/^define\s+(.+)/, :define, help: { "define TEXT" => "Uses UrbanDictionary to define a word or phrase" })
-      route(/^imdb\s+(.+)/, :imdb)
+      route(/^[dD]efine\s+(.+)/, :define, help: { "define TEXT" => "Uses UrbanDictionary to define a word or phrase" })
+      route(/^[iI]mdb\s+(.+)/, :imdb)
+      route(/^[sS]earch\s+(.+)/, :reddit_search)
+      route(/^[rR]eddit\s+(.+)/, :reddit)
 
       def echo(response)
         response.reply(response.matches)
@@ -63,6 +65,66 @@ module Lita
           response.reply(render_template('imdb', title: data["Title"], plot: data["Plot"], released: data["Released"], actors: data["Actors"]))
         else
           response.reply("Movie not found, sorry guy")
+        end
+      end
+
+      def reddit(response)
+        http_response = http.get do |req|
+          req.url 'https://www.reddit.com/r/'+response.args.join('_')+'/hot.json'
+          req.headers['Accept'] = 'application/json'
+        end
+
+        data = MultiJson.load(http_response.body)
+        if data["data"]["children"].count > 0
+          count = data["data"]["children"].count
+          the_post = data["data"]["children"][rand(count)]["data"]
+
+          if !the_post['preview'].nil? && !the_post['preview']['images'].nil?
+            preview = the_post['preview']['images'][0]['source']['url']
+          else
+            preview = nil
+          end
+
+          if !the_post['media'].nil? && !the_post['media']['oembed'].nil?
+            media = the_post['media']['oembed']['url']
+          else
+            media = nil
+          end
+
+          response.reply(render_template('reddit', title: the_post["title"], url: the_post["url"], score: the_post["score"], selftext: the_post["selftext"], nsfw: the_post["over_18"], preview: preview, media: media))
+        end
+      rescue
+        response.reply("Invalid subreddit or no posts found")
+      end
+
+      def reddit_search(response)
+
+        http_response = http.get do |req|
+          req.url 'https://www.reddit.com/search.json?q='+response.args.join(' ')+'&sort=hot&limit=5'
+          req.headers['Accept'] = 'application/json'
+        end
+
+        data = MultiJson.load(http_response.body)
+        if data["data"]["children"].count > 0
+          data["data"]["children"].each do |item|
+            the_post = item["data"]
+
+            if !the_post['preview'].nil? && !the_post['preview']['images'].nil?
+              preview = the_post['preview']['images'][0]['source']['url']
+            else
+              preview = nil
+            end
+
+            if !the_post['media'].nil? && !the_post['media']['oembed'].nil?
+              media = the_post['media']['oembed']['url']
+            else
+              media = nil
+            end
+
+            response.reply(render_template('reddit', title: the_post["title"], url: the_post["url"], score: the_post["score"], selftext: the_post["selftext"], nsfw: the_post["over_18"], preview: preview, media: media))
+          end
+        else
+          response.reply('No results found')
         end
       end
 

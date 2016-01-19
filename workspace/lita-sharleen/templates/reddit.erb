@@ -1,0 +1,4 @@
+<% if @nsfw %>NSFW: <% end %><%= @title %>
+<%= @url %>
+Score: <%= @score %>
+<%= @selftext unless @selftext.empty? %>
