@@ -62,7 +62,7 @@ module Lita
 
         data = MultiJson.load(http_response.body)
         if data["Response"] == "True"
-          response.reply(render_template('imdb', title: data["Title"], plot: data["Plot"], released: data["Released"], actors: data["Actors"]))
+          response.reply(render_template('imdb', title: data["Title"], plot: data["Plot"], released: data["Released"], actors: data["Actors"], imdb_url: 'http://www.imdb.com/title/'+data["imdbID"]))
         else
           response.reply("Movie not found, sorry guy")
         end
